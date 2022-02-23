@@ -1,0 +1,38 @@
+AHMET SEGMENT PARA 'VELI'
+    VAR1 DW 6789H
+    VAR2 DW 0ABCDH
+    VAR3 DD 0H
+AHMET ENDS
+MEHMET SEGMENT PARA STACK 'MUHITTIN'
+    DW 20   DUP(?)
+MEHMET ENDS
+ANA SEGMENT PARA 'TACETTIN'
+    ASSUME SS:MEHMET,DS:AHMET,CS:ANA 
+    
+    BABA PROC FAR 
+        
+        
+    PUSH DS
+    XOR AX,AX
+    PUSH AX
+    MOV AX,AHMET
+    MOV DS,AX
+    
+        
+    LEA SI,VAR1
+    LEA DI,VAR2
+    LEA BX,VAR3
+    MOV AL,[SI]
+    MOV DL,[SI+1]
+    ADD AL,[DI]
+    ADC DL,[DI+1]
+    ADC BYTE PTR [BX+2],0
+    MOV [BX],AL
+    MOV [BX+1],DL
+    
+    BABA ENDP 
+    ANA ENDS   
+END BABA
+
+    
+    
