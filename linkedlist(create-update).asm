@@ -1,11 +1,11 @@
         ; -----------------------------------------------------------------------
-        ; Okunan isaretli iki sayinin toplamini hesaplayip ekrana yazdirir.
-        ; ANA 		: Ana yordam 
-        ; PUT_STR 	: Ekrana sonu 0 ile belirlenmis dizgeyi yazdirir. 
-        ; PUTC 	: AL deki karakteri ekrana yazdirir. 
-        ; GETC 	: Klavyeden basilan karakteri ALye alir.
-        ; PUTN 	: AXdeki sayiyi ekrana yazdirir. 
-        ; GETN 	: Klavyeden okunan sayeyi AXe koyar
+        ; Calculates the sum of two read signed numbers and prints it on the screen.
+        ; ANA 		: Main procedure
+        ; PUT_STR 	: Prints the string with the end of 0 to the screen.
+        ; PUTC 	: Prints the character in AL to the screen.
+        ; GETC 	:Takes the character printed from the keyboard to AL.
+        ; PUTN 	: Prints the number in AX to the screen. 
+        ; GETN 	: Puts the number read from the keyboard in AX
         ; -----------------------------------------------------------------------
 STACKSG 	SEGMENT PARA STACK 'STACK' 
     
@@ -21,13 +21,13 @@ CR	EQU 13
 LF	EQU 10 
 MSG7 DB                    " ",0        
 MSG6 DB CR, LF,            "->",0
-MSG4	DB CR, LF,         'dizi eleman sayisini giriniz: ',0
-MSG5	DB CR, LF,         'dizi elemanini giriniz:', 0   
-MSG1 DB CR, LF,            "1-) Dizi eklemek icin 1'e basiniz Kutay Alptekin 20011615",0  
-MSG2 DB CR, LF,            "2-) Var olan diziye eleman eklemek icin 2'ye basiniz Kutay Alptekin 20011615",0 
-MSG3 DB CR, LF,            "3-) Diziyi linklerle beraber gostermek icin 3'e basiniz ",0
-CIKIS DB CR, LF,           "4-) Cikmak icin 4'e basiniz Kutay Alptekin 20011615 ", 0
-HATA	DB CR, LF,         'Dikkat !!! Sayi vermediniz yeniden giris yapiniz.!!!  ', 0
+MSG4	DB CR, LF,         'Enter the number of array elements: ',0
+MSG5	DB CR, LF,         'Enter element', 0   
+MSG1 DB CR, LF,            "1-) Press 1 to add array",0  
+MSG2 DB CR, LF,            "2-) Press 2 to add element to existing array",0 
+MSG3 DB CR, LF,            "3-) Press 3 to show the series with the links ",0
+CIKIS DB CR, LF,           "4-) Press 4 to exit ", 0
+HATA	DB CR, LF,         'Attention !!! You did not give a number, please log in again.!!!  ', 0
 N	DW ?         
 dizi    DW 100 DUP (?) 
 dizi2   DW 100 DUP(?) 
@@ -42,12 +42,9 @@ DATASG 	ENDS
 CODESG 	SEGMENT PARA 'CODE' 
     
 	ASSUME CS:CODESG, DS:DATASG, SS:STACKSG 
-	  
-
-       
+	    
      MENU PROC NEAR  
-        
-        
+              
     MOV AX,OFFSET MSG1
     CALL PUT_STR           
     MOV AX,OFFSET MSG2
@@ -58,10 +55,7 @@ CODESG 	SEGMENT PARA 'CODE'
 	CALL PUT_STR 
 	CALL GETN 
 	
-
-
-	 
-	          RET
+RET
 MENU ENDP
      
      
@@ -92,8 +86,6 @@ MENU ENDP
 	CMP AX,4 
 	JE J41 
 	
-	
-
 	J12:    MOV AX, OFFSET MSG4
            CALL PUT_STR			    
            CALL GETN  			         
@@ -270,10 +262,10 @@ CTRL_NUM:
         JB error 
         CMP AL, '9'
         JA error		                    ; degil ise HATA mesaji verilecek
-        SUB AL,'0'	                        ; rakam alindi, haneyi toplama dâhil et 
+        SUB AL,'0'	                        ; rakam alindi, haneyi toplama dÃ¢hil et 
         MOV BL, AL	                        ; BL ye okunan haneyi koy 
         MOV AX, 10 	                        ; Haneyi eklerken *10 yapilacak 
-        PUSH DX		                        ; MUL komutu DX i bozar isaret için saklanmali
+        PUSH DX		                        ; MUL komutu DX i bozar isaret iÃ§in saklanmali
         MUL CX		                        ; DX:AX = AX * CX
         POP DX		                        ; isareti geri al 
         MOV CX, AX	                        ; CX deki ara deger *10 yapildi 
@@ -284,8 +276,8 @@ ERROR:
         CALL PUT_STR	                    ; HATA mesajini goster 
         JMP GETN_START                      ; o ana kadar okunanlari unut yeniden sayi almaya basla 
 FIN_READ:
-        MOV AX, CX	                        ; sonuç AX uzerinden donecek 
-        CMP DX, 1	                        ; Ýsarete gore sayiyi ayarlamak lazim 
+        MOV AX, CX	                        ; sonuÃ§ AX uzerinden donecek 
+        CMP DX, 1	                        ; Ä°sarete gore sayiyi ayarlamak lazim 
         JE FIN_GETN
         NEG AX		                        ; AX = -AX
 FIN_GETN:
@@ -299,13 +291,13 @@ PUTN 	PROC NEAR
         ;------------------------------------------------------------------------
         ; AX de bulunan sayiyi onluk tabanda hane hane yazdirir. 
         ; CX: haneleri 10 a bolerek bulacagiz, CX=10 olacak
-        ; DX: 32 bolmede isleme dâhil olacak. Soncu etkilemesin diye 0 olmali 
+        ; DX: 32 bolmede isleme dÃ¢hil olacak. Soncu etkilemesin diye 0 olmali 
         ;------------------------------------------------------------------------
         PUSH CX
         PUSH DX 	
         XOR DX,	DX 	                        ; DX 32 bit bolmede soncu etkilemesin diye 0 olmali 
         PUSH DX		                        ; haneleri ASCII karakter olarak yiginda saklayacagiz.
-                                            ; Kaç haneyi alacagimizi bilmedigimiz için yigina 0 
+                                            ; KaÃ§ haneyi alacagimizi bilmedigimiz iÃ§in yigina 0 
                                             ; degeri koyup onu alana kadar devam edelim.
         MOV CX, 10	                        ; CX = 10
         CMP AX, 0
@@ -327,7 +319,7 @@ CALC_DIGITS:
 DISP_LOOP:
                                             ; yazilacak tum haneler yiginda. En anlamli hane ustte 
                                             ; en az anlamli hane en alta ve onu altinda da 
-                                            ; sona vardigimizi anlamak için konan 0 degeri var. 
+                                            ; sona vardigimizi anlamak iÃ§in konan 0 degeri var. 
         POP AX		                        ; sirayla degerleri yigindan alalim
         CMP AX, 0 	                        ; AX=0 olursa sona geldik demek 
         JE END_DISP_LOOP 
@@ -343,7 +335,7 @@ PUTN 	ENDP
 PUT_STR	PROC NEAR
         ;------------------------------------------------------------------------
         ; AX de adresi verilen sonunda 0 olan dizgeyi karakter karakter yazdirir.
-        ; BX dizgeye indis olarak kullanilir. Önceki degeri saklanmalidir. 
+        ; BX dizgeye indis olarak kullanilir. Ã–nceki degeri saklanmalidir. 
         ;------------------------------------------------------------------------
 	PUSH BX 
         MOV BX,	AX			            ; Adresi BXe al 
@@ -352,7 +344,7 @@ PUT_LOOP:
         CMP AL,0		
         JE  PUT_FIN 			        ; 0 geldi ise dizge sona erdi demek
         CALL PUTC 			            ; ALdeki karakteri ekrana yazar
-        INC BX 				            ; bir sonraki karaktere gecerç
+        INC BX 				            ; bir sonraki karaktere gecerÃ§
         MOV AL, BYTE PTR [BX]
         JMP PUT_LOOP			        ; yazdirmaya devam 
 PUT_FIN:
